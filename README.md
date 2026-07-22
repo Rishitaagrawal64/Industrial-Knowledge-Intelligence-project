@@ -9,19 +9,15 @@ Why
 Industrial knowledge lives in scattered PDFs and folders. A procedure can quietly drift out of step with the standard it's meant to satisfy, or repeat a mistake a past incident report already flagged — and nobody notices until an audit or, worse, another incident. This project explores whether an LLM can be pointed at that raw document set and (1) answer operational questions with verifiable citations, and (2) proactively flag contradictions across document types.
 
 How it works
-Documents (PDF/TXT/MD)
-        │
-        ▼
-  Chunk + Embed  ──────────────►  Chroma vector store (local, on disk)
-        │
-        ▼
-  Entity Tagging (Claude)
-  equipment · doc_type · standards · dates
-        │
-        ├──────────────► Ask a Question (RAG)
-        │                 retrieve → cite → confidence
-        │
-        └──────────────► Find Compliance Gaps
+Documents (PDF/TXT/MD) =>
+
+    1. Chunk + Embed  ─  Chroma vector store (local, on disk)
+    
+     2.Entity Tagging (Claude) equipment · doc_type · standards · dates
+  
+     2.a Ask a Question (RAG)
+                       retrieve → cite → confidence
+     2.b Find Compliance Gaps
                           cross-reference procedures / standards / incidents
 Ingest (ingest.py) — PDFs and text files are split into overlapping 800-character chunks and embedded into a local Chroma vector store. Nothing leaves the machine.
 Extract & Tag (extract.py) — each chunk is sent to Claude to extract structured metadata (equipment IDs, document type, referenced standards, dates). Chunks that share tags are effectively "linked," giving graph-like retrieval without a graph database.
@@ -34,13 +30,15 @@ A three-tab Streamlit UI (app.py) ties it together: 📂 Upload Documents · �
 
 Project structure
 .
-├── app.py              # Streamlit demo UI (3 tabs)
-├── ingest.py            # PDF/text loading, chunking, embedding, Chroma storage
-├── extract.py            # LLM entity extraction / metadata tagging
-├── rag.py               # Retrieval-augmented Q&A with citations
-├── contradiction.py     # Cross-document contradiction / compliance gap detection
-├── requirements.txt
-└── sample_docs/         # Drop sample PDFs/text files here
+
+1.  app.py # Streamlit demo UI (3 tabs)
+2.  ingest.py            # PDF/text loading, chunking, embedding, Chroma storage
+3.  extract.py            # LLM entity extraction / metadata tagging
+4.  rag.py               # Retrieval-augmented Q&A with citations
+5.  contradiction.py     # Cross-document contradiction / compliance gap detection
+6.   requirements.txt
+7.   sample_docs/         # Drop sample PDFs/text files here
+
 Setup
 bash
 git clone <this-repo>
